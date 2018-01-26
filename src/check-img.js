@@ -1,53 +1,38 @@
 import eventLoop from './event-loop';
 
-let screenWidh = 0;
-let screenHight = 0;
-function getWH(){
-    function getClientHeight(){
-        var clientHeight=0;
-        if(document.body.clientHeight&&document.documentElement.clientHeight){
-            var clientHeight = (document.body.clientHeight<document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;        
-        }
-        else{
-            var clientHeight = (document.body.clientHeight>document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;    
-        }
-        return clientHeight;
-    }
-    
-    function getClientWidth(){
-        var clientWidth=0;
-        if(document.body.clientWidth&&document.documentElement.clientWidth){
-            var clientWidth = (document.body.clientWidth<document.documentElement.clientWidth)?document.body.clientWidth:document.documentElement.clientWidth;        
-        }
-        else{
-            var clientWidth = (document.body.clientWidth>document.documentElement.clientWidth)?document.body.clientWidth:document.documentElement.clientWidth;    
-        }
-        return clientWidth;
-    }
-
-    screenWidh = getClientWidth();
-    screenHight = getClientHeight();
-}
-getWH(); //初始化屏幕宽高
-window.onresize = getWH; //监听屏幕宽高
+let checkEle = [];
+let screenWidth = 0;
+let screenHeight = 0;
 
 //判断元素是否在显示中
-function isShow(ele){
-    let bound = ele.img.getBoundingClientRect();
-    if(bound.left > 0 && bound.left < screenWidh &&
-        bound.top > 0 && bound.top < screenHight){
-            //加载src
-            ele.img.src = ele.src;
-            return true;
-    }
-    return false;
+function isShow(ele) {
+  let bound = ele.img.getBoundingClientRect();
+  if (bound.left > 0 && bound.left < window.innerWidth &&
+    bound.top > 0 && bound.top < window.innerHeight) {
+    //在src加载后替换src
+    let tempImg = new Image();
+    tempImg.src = ele.src;
+    tempImg.onload = function () {
+      ele.img.src = ele.src;
+    };
+    return true;
+  }
+  return false;
 }
 
 eventLoop.setCheckEle(isShow);
-
-let addEle = function (img, src){
-    eventLoop.addEle({img,src})
+let checkImg = {};
+checkImg.addEle = function (img, src) {
+  let ele = { img, src };
+  eventLoop.addEle(ele);
+  checkEle.push(ele);
+};
+checkImg.removeEle = function (el) {
+  for (let k in checkEle) {
+    if (checkEle[k]['img'] === el) {
+      eventLoop.removeEle(checkEle[k]);
+    }
+  }
 };
 
-export default addEle;
-
+export default checkImg;

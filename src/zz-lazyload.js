@@ -1,11 +1,14 @@
-import addEle from './check-img';
+import checkImg from './check-img';
 
 let zzLazyload = {
-    bind: function (el){
-        var src = el.src;
-        el.src = '';
-        addEle(el, src);
-    }
+  bind: function (el) {
+    var src = el.src;
+    el.src = '';
+    checkImg.addEle(el, src);
+  },
+  unbind: function (el) {
+    checkImg.removeEle(el);
+  }
 };
 
 export default zzLazyload;
