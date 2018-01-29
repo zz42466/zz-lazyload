@@ -1,14 +1,12 @@
 import eventLoop from './event-loop';
 
 let checkEle = [];
-let screenWidth = 0;
-let screenHeight = 0;
 
 //判断元素是否在显示中
 function isShow(ele) {
   let bound = ele.img.getBoundingClientRect();
-  if (bound.left > 0 && bound.left < window.innerWidth &&
-    bound.top > 0 && bound.top < window.innerHeight) {
+  if (bound.left > 0 && bound.left <= window.innerWidth &&
+    bound.top > 0 && bound.top <= window.innerHeight) {
     //在src加载后替换src
     let tempImg = new Image();
     tempImg.src = ele.src;
